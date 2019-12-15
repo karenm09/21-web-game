@@ -1,0 +1,46 @@
+body {
+   width: 100%;
+   height: auto;
+   background-image: url("./blackjack.jpg");
+   background-repeat: no-repeat;
+   background-size: 100%;
+}
+
+h1 {
+   text-align: center;
+   color: yellow;
+}
+
+#winOrLoss {
+   color: white;
+   text-align: center;
+   font-weight: bold;
+}
+
+#gameStart, #twoBtns{
+   display: flex;
+   justify-content: center;
+}
+
+#board {
+   display: grid;
+   grid-template-columns: repeat(2, 1fr);
+}
+
+#playerDiv {
+   grid-area: 2 / 1;
+}
+
+#computerDiv {
+   grid-area: 2 / 2;
+}
+
+ul {
+   display: flex;
+}
+
+li {
+   list-style-type: none;
+}
+
+

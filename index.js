@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
    const fetchCards = async () => {
-
+      
       try {
          let res = await axios.get("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
          deck_ID = res.data.deck_id
@@ -33,9 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
          //cardsImage
          let ul = document.createElement('ul')
+         let playerDiv = document.createElement('div')
+         playerDiv.id = "playerDiv"
          let displayCards = document.querySelector('#board')
          let h3 = document.createElement('h3')
-         displayCards.appendChild(ul)
+         h3.id = "playerData"
+         playerDiv.appendChild(ul)
+         displayCards.appendChild(playerDiv)
          cards.forEach(card => {
             let li = document.createElement('li')
             let cardImgs = document.createElement('img')
@@ -52,15 +56,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
          //display the sum of the 2 current Cards
          h3.innerText = currentScore
-         displayCards.appendChild(h3)
+         playerDiv.appendChild(h3)
 
          //
          if (currentScore === 21) {
-            let declare = document.querySelector("#winOrLoss")
+            let declare = document.querySelector("#playerData")
             return declare.innerText = "BLACKJACK!!!"
          }
          if (currentScore > 21) {
-            let declare = document.querySelector("#winOrLoss")
+            let declare = document.querySelector("#playerData")
             return declare.innerText = "BUSTED"
          }
 
@@ -71,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
    }
 
    const drawCard = async () => {
+      
       let h3 = document.querySelector('h3')
       if (h3) h3.innerHTML = ""
       try {
@@ -81,9 +86,13 @@ document.addEventListener("DOMContentLoaded", () => {
          //get image
          
          let ul = document.createElement('ul')
+         let playerDiv = document.createElement('div')
+         playerDiv.id = "playerDiv"
          let displayCards = document.querySelector('#board')
          let h3 = document.createElement('h3')
-         displayCards.appendChild(ul)
+         h3.id = "playerData"
+         playerDiv.appendChild(ul)
+         displayCards.appendChild(playerDiv)
 
          let li = document.createElement('li')
          let cardImgs = document.createElement('img')
@@ -100,15 +109,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
          //add the sum to the current total
          h3.innerText = currentScore
-         displayCards.appendChild(h3)
+         playerDiv.appendChild(h3)
 
          if (currentScore === 21) {
-            let declare = document.querySelector("#winOrLoss")
-            return declare.innerText = "BLACKJACK!!!"
+            let playerCurr = document.querySelector("#playerData")
+            return playerCurr.innerText = "BLACKJACK!!!"
          }
          if (currentScore > 21) {
-            let declare = document.querySelector("#winOrLoss")
-            return declare.innerText = "BUSTED"
+            let playerCurr = document.querySelector("##playerData")
+            return playerCurr.innerText = "BUSTED"
          }
       }
 
@@ -118,17 +127,20 @@ document.addEventListener("DOMContentLoaded", () => {
    }
 
    const computerDraws = async () =>{
+      
       try{
       let getThreeCards = await axios.get(`https://deckofcardsapi.com/api/deck/${deck_ID}/draw/?count=3`)
          let cards = getThreeCards.data.cards
 
-   
-
          //cardsImage
          let ul = document.createElement('ul')
+         let computerDiv = document.createElement('div')
+         computerDiv.id = "computerDiv"
          let displayCards = document.querySelector('#board')
          let h3 = document.createElement('h3')
-         displayCards.appendChild(ul)
+         h3.id = "computerData"
+         computerDiv.appendChild(ul)
+         displayCards.appendChild(computerDiv)
          cards.forEach(card => {
             let li = document.createElement('li')
             let cardImgs = document.createElement('img')
@@ -143,25 +155,31 @@ document.addEventListener("DOMContentLoaded", () => {
             // console.log(computerScore)
          })
 
-         //display the sum of the 2 current Cards
+         //display the sum of the 3 current Cards
          h3.innerText = computerScore
-         displayCards.appendChild(h3)
+         computerDiv.appendChild(h3)
 
          //
          if (computerScore === 21) {
-            let declare = document.querySelector("#winOrLoss")
-            return declare.innerText = "BLACKJACK!!!"
+            let pcCurr = document.querySelector("#computerData")
+            return pcCurr.innerText = "BLACKJACK!!!"
          }
          if (computerScore > 21) {
-            let declare = document.querySelector("#winOrLoss")
-            return declare.innerText = "BUSTED"
+            let pcCurr = document.querySelector("#computerData")
+            return pcCurr.innerText = "BUSTED"
          }
 
       } catch (err) {
          console.log(err)
       }
    }
+   const declareWinner = () => {
+      let declare = document.querySelector("#winOrLoss")
+      let playerCurr = document.querySelector("#playerData")
+      let pcCurr = document.querySelector("#computerData")
+   }
    setupBtns()
+   declareWinner
 })
 
 /*
