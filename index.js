@@ -104,8 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
    const drawCard = async () => {
 
-      playerCurrStat = document.querySelector('#playerData')
-      if (playerCurrStat) playerCurrStat.parentNode.removeChild(playerCurrStat)
+      playerDiv = document.querySelector('#playerDiv')
+      if (playerDiv) playerDiv.parentNode.removeChild(playerDiv)
 
       try {
          let singleCard = await axios.get(`https://deckofcardsapi.com/api/deck/${deck_ID}/draw/?count=1`)
@@ -251,19 +251,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
    const declareWinner = () => {
       if (currentScore > computerScore) {
+         declare.innerText = "PLAYER WINS!"
          startBtn = document.querySelector('#start')
          startBtn.style.visibility = "visible"
          hitBtn = document.querySelector('#hit')
          hitBtn.style.visibility = "hidden"
-         declare.innerText = "PLAYER WINS!"
+         stayBtn = document.querySelector('#stay')
+         stayBtn.style.visibility = "hidden";
+         
       } else if (currentScore < computerScore) {
-         startBtn = document.querySelector('#start')
-         startBtn.style.visibility = "visible"
          declare.innerText = "DEALER WINS"
-      } else {
          startBtn = document.querySelector('#start')
          startBtn.style.visibility = "visible"
-         "TIE, START A NEW GAME"
+         hitBtn = document.querySelector('#hit')
+         hitBtn.style.visibility = "hidden"
+         stayBtn = document.querySelector('#stay')
+         stayBtn.style.visibility = "hidden";
+
+      } else {
+         declare.innerText = "TIE, START A NEW GAME"
+         startBtn = document.querySelector('#start')
+         startBtn.style.visibility = "visible"
+         hitBtn = document.querySelector('#hit')
+         hitBtn.style.visibility = "hidden"
+         stayBtn = document.querySelector('#stay')
+         stayBtn.style.visibility = "hidden";
       }
    }
    setupBtns()
