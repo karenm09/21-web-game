@@ -4,25 +4,28 @@ document.addEventListener("DOMContentLoaded", () => {
    let deck_ID;
    let playerCurr;
    let pcCurr;
-   let ul = document.createElement('ul')
-   let declare = document.querySelector("#winOrLoss")
-   let playerCurrStat = document.querySelector('#playerData')
-   
+   let ul = document.createElement('ul');
+   let declare = document.querySelector("#winOrLoss");
+   let playerCurrStat = document.querySelector('#playerData');
+
+
 
    const setupBtns = () => {
       let startBtn = document.querySelector('#start')
       startBtn.addEventListener('click', () => {
-         startBtn.style.visibility = 'hidden'
+         startBtn.style.visibility = 'hidden';
+         hitBtn.style.visibility = "visible";
+         stayBtn.style.visibility = "visible";
          clearBoard()
          clearStats()
          fetchCards()
       })
-      
+
       let hitBtn = document.querySelector('#hit')
       hitBtn.addEventListener('click', () => {
          drawCard()
       })
-      
+
       let stayBtn = document.querySelector('#stay')
       stayBtn.addEventListener('click', () => {
          computerDraws()
@@ -32,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
    const fetchCards = async () => {
-      
+
       try {
          let res = await axios.get("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
          deck_ID = res.data.deck_id
@@ -61,29 +64,35 @@ document.addEventListener("DOMContentLoaded", () => {
                card.value = 10
             } else if (card.value === "ACE")
                if (currentScore > 10) {
-               card.value = 1;
+                  card.value = 1;
                } else {
                   card.value = 11;
                }
 
             //Add the current card values 
-            currentScore += Number(card.value)
+            currentScore += Number(card.value);
 
 
             //display the sum of the 2 current Cards
-            playerCurr.innerText = `Current Player score is ${currentScore}`
-            playerDiv.appendChild(playerCurr)
+            playerCurr.innerText = `Current Player score is ${currentScore}`;
+            playerDiv.appendChild(playerCurr);
          })
 
 
          //
          if (currentScore === 21) {
-            startBtn = document.querySelector('#start')
-            startBtn.style.visibility = "visible"
+            startBtn = document.querySelector('#start');
+            startBtn.style.visibility = "visible";
 
             playerCurrStat = document.querySelector("#playerData")
-            playerCurrStat.innerText = "BLACKJACK!!!"
-            declare.appendChild(playerCurrStat)
+            playerCurrStat.innerText = `Player score is ${currentScore}, BLACKJACK`;
+            declare.innerText = "PLAYER WINS";
+
+            hitBtn = document.querySelector("#hit");
+            hitBtn.style.visibility = "hidden";
+
+            stayBtn = document.querySelector("#stay");
+            stayBtn.style.visibility = "hidden";
 
          }
 
@@ -124,26 +133,34 @@ document.addEventListener("DOMContentLoaded", () => {
          currentScore += Number(getCard.value)
 
          //add the sum to the current total
-         playerCurr.innerText = `Current Player score is ${currentScore}`
-         playerDiv.appendChild(playerCurr)
+         playerCurr.innerText = `Current Player score is ${currentScore}`;
+         playerDiv.appendChild(playerCurr);
 
 
-         if (currentScore === 21) {      
-            playerCurr = document.querySelector("#playerData")
-            playerCurr.innerText = `Player score is ${currentScore}, BLACKJACK`
-            declare.innerText = "PLAYER WINS!!!"
-            
-            startBtn = document.querySelector('#start')
-            startBtn.style.visibility = "visible"
+         if (currentScore === 21) {
+            playerCurr = document.querySelector("#playerData");
+            playerCurr.innerText = `Player score is ${currentScore}, BLACKJACK`;
+            declare.innerText = "PLAYER WINS!!!";
+
+            startBtn = document.querySelector('#start');
+            startBtn.style.visibility = "visible";
+            hitBtn = document.querySelector("#hit")
+            hitBtn.style.visibility = "hidden";
+            stayBtn = document.querySelector('#stay')
+            stayBtn.style.visibility = "hidden";
          }
 
          if (currentScore > 21) {
             playerCurr = document.querySelector("#playerData")
-            playerCurr.innerText = `Player score is ${currentScore}, you BUSTED`
-            declare.innerText = "PLAYER LOSE!!!"
-            
-            startBtn = document.querySelector('#start')
-            startBtn.style.visibility = "visible"
+            playerCurr.innerText = `Player score is ${currentScore}, you BUSTED`;
+            declare.innerText = "PLAYER LOSE!!!";
+
+            startBtn = document.querySelector('#start');
+            startBtn.style.visibility = "visible";
+            hitBtn = document.querySelector("#hit");
+            hitBtn.style.visibility = "hidden";  
+            stayBtn = document.querySelector('#stay')
+            stayBtn.style.visibility = "hidden";       
          }
       }
 
@@ -193,14 +210,26 @@ document.addEventListener("DOMContentLoaded", () => {
             pcCurr.innerText = `Dealer score is ${computerScore}, BLACKJACK`
             declare.innerText = "DEALER WINS!"
 
+            hitBtn = document.querySelector("#hit");
+            hitBtn.style.visibility = "hidden";
+
+            stayBtn = document.querySelector('#stay')
+            stayBtn.style.visibility = "hidden";
+
          }
          if (computerScore > 21) {
-            startBtn = document.querySelector('#start')
-            startBtn.style.visibility = "visible"
+            startBtn = document.querySelector('#start');
+            startBtn.style.visibility = "visible";
 
-            pcCurr = document.querySelector("#computerData")
-            pcCurr.innerText = `Dealer score is ${computerScore}, Dealer BUSTED`
-            declare.innerText = "DEALER LOSE!"
+            pcCurr = document.querySelector("#computerData");
+            pcCurr.innerText = `Dealer score is ${computerScore}, Dealer BUSTED`;
+            declare.innerText = "DEALER LOSE!";
+
+            hitBtn = document.querySelector("#hit");
+            hitBtn.style.visibility = "hidden";
+
+            stayBtn = document.querySelector('#stay')
+            stayBtn.style.visibility = "hidden";
          }
 
       } catch (err) {
@@ -221,12 +250,19 @@ document.addEventListener("DOMContentLoaded", () => {
    }
 
    const declareWinner = () => {
-      if(currentScore > computerScore){
-         console.log(currentScore)
+      if (currentScore > computerScore) {
+         startBtn = document.querySelector('#start')
+         startBtn.style.visibility = "visible"
+         hitBtn = document.querySelector('#hit')
+         hitBtn.style.visibility = "hidden"
          declare.innerText = "PLAYER WINS!"
-      } else if (currentScore < computerScore){
+      } else if (currentScore < computerScore) {
+         startBtn = document.querySelector('#start')
+         startBtn.style.visibility = "visible"
          declare.innerText = "DEALER WINS"
       } else {
+         startBtn = document.querySelector('#start')
+         startBtn.style.visibility = "visible"
          "TIE, START A NEW GAME"
       }
    }
