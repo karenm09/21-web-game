@@ -1,9 +1,7 @@
 body {
    width: 100%;
-   height: auto;
-   background-image: url("./blackjack.jpg");
-   background-repeat: no-repeat;
-   background-size: 100%;
+   height: 100%;
+   background-color: #006400;
 }
 
 h1 {
@@ -52,6 +50,12 @@ li {
 #scores {
    display: flex;
    flex-direction: column;
-   justify-content: center;
+   /* justify-content: center; */
+   background-color: black;
+   width: 25%;
+}
+
+#playerData {
+   text-align: center;
 }
 

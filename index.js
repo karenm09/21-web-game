@@ -4,25 +4,29 @@ document.addEventListener("DOMContentLoaded", () => {
    let deck_ID;
    let playerCurr;
    let pcCurr;
-   let declare = document.querySelector("#winOrLoss")
-   let body = document.body
-   let playerCurrStat = document.querySelector('#playerData')
    let ul = document.createElement('ul')
-   let scoreTracker = document.createElement('div')
-   scoreTracker.id = "scores"
+   let declare = document.querySelector("#winOrLoss")
+   let playerCurrStat = document.querySelector('#playerData')
+   
 
    const setupBtns = () => {
       let startBtn = document.querySelector('#start')
       startBtn.addEventListener('click', () => {
+         startBtn.style.visibility = 'hidden'
+         clearBoard()
+         clearStats()
          fetchCards()
       })
+      
       let hitBtn = document.querySelector('#hit')
       hitBtn.addEventListener('click', () => {
          drawCard()
       })
+      
       let stayBtn = document.querySelector('#stay')
       stayBtn.addEventListener('click', () => {
          computerDraws()
+         declareWinner()
       })
    }
 
@@ -35,8 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
          let getTwoCards = await axios.get(`https://deckofcardsapi.com/api/deck/${deck_ID}/draw/?count=2`)
          let cards = getTwoCards.data.cards
 
-         let startBtn = document.querySelector('#start')
-         startBtn.parentNode.removeChild(startBtn)
 
          //cardsImage
          ul = document.createElement('ul')
@@ -57,27 +59,34 @@ document.addEventListener("DOMContentLoaded", () => {
             //Assign values to J, Q, K and Ace
             if (card.value === "JACK" || card.value === "QUEEN" || card.value === "KING") {
                card.value = 10
-            } else if (card.value === "ACE") card.value = 11;
-            
+            } else if (card.value === "ACE")
+               if (currentScore > 10) {
+               card.value = 1;
+               } else {
+                  card.value = 11;
+               }
+
             //Add the current card values 
             currentScore += Number(card.value)
-            
+
 
             //display the sum of the 2 current Cards
             playerCurr.innerText = `Current Player score is ${currentScore}`
-            scoreTracker.appendChild(playerCurr)
-            body.appendChild(scoreTracker)
+            playerDiv.appendChild(playerCurr)
          })
 
 
          //
          if (currentScore === 21) {
+            startBtn = document.querySelector('#start')
+            startBtn.style.visibility = "visible"
+
             playerCurrStat = document.querySelector("#playerData")
             playerCurrStat.innerText = "BLACKJACK!!!"
             declare.appendChild(playerCurrStat)
 
          }
-         
+
       } catch (err) {
          console.log(err)
       }
@@ -85,17 +94,15 @@ document.addEventListener("DOMContentLoaded", () => {
    }
 
    const drawCard = async () => {
-      
+
       playerCurrStat = document.querySelector('#playerData')
-      if (playerCurrStat) playerCurrStat.innerHTML = ""
+      if (playerCurrStat) playerCurrStat.parentNode.removeChild(playerCurrStat)
 
       try {
          let singleCard = await axios.get(`https://deckofcardsapi.com/api/deck/${deck_ID}/draw/?count=1`)
          let getCard = singleCard.data.cards[0]
-         
 
          //get image
-         
          let playerDiv = document.createElement('div')
          playerDiv.id = "playerDiv"
          let displayCards = document.querySelector('#board')
@@ -113,27 +120,30 @@ document.addEventListener("DOMContentLoaded", () => {
          if (getCard.value === "JACK" || getCard.value === "QUEEN" || getCard.value === "KING") {
             getCard.value = 10
          } else if (getCard.value === "ACE") getCard.value = 11;
+
          currentScore += Number(getCard.value)
-         
+
          //add the sum to the current total
          playerCurr.innerText = `Current Player score is ${currentScore}`
-         scoreTracker.appendChild(playerCurr)
-         body.appendChild(scoreTracker)
+         playerDiv.appendChild(playerCurr)
 
 
-         if (currentScore === 21) {
+         if (currentScore === 21) {      
             playerCurr = document.querySelector("#playerData")
-            playerCurr.innerText = "BLACKJACK!!!"
-            declare.appendChild(playerCurr)
-            fetchCards()
-           
+            playerCurr.innerText = `Player score is ${currentScore}, BLACKJACK`
+            declare.innerText = "PLAYER WINS!!!"
+            
+            startBtn = document.querySelector('#start')
+            startBtn.style.visibility = "visible"
          }
 
          if (currentScore > 21) {
-            playerCurr = document.querySelector("##playerData")
-            playerCurr.innerText = "BUSTED"
-            declare.appendChild(playerCurr)
-            fetchCards()
+            playerCurr = document.querySelector("#playerData")
+            playerCurr.innerText = `Player score is ${currentScore}, you BUSTED`
+            declare.innerText = "PLAYER LOSE!!!"
+            
+            startBtn = document.querySelector('#start')
+            startBtn.style.visibility = "visible"
          }
       }
 
@@ -142,10 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
    }
 
-   const computerDraws = async () =>{
-      
-      try{
-      let getThreeCards = await axios.get(`https://deckofcardsapi.com/api/deck/${deck_ID}/draw/?count=3`)
+   const computerDraws = async () => {
+
+      try {
+         let getThreeCards = await axios.get(`https://deckofcardsapi.com/api/deck/${deck_ID}/draw/?count=3`)
          let cards = getThreeCards.data.cards
 
          //cardsImage
@@ -168,46 +178,57 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (card.value === "ACE") card.value = 11;
             // console.log(card.value)
             computerScore += Number(card.value)
-            // console.log(computerScore)
          })
 
          //display the sum of the 3 current Cards
-         pcCurr.innerText = `Computer score is ${computerScore}`
-         scoreTracker.appendChild(pcCurr)
-         body.appendChild(scoreTracker)
-
+         pcCurr.innerText = `Dealer score is ${computerScore}`
+         computerDiv.appendChild(pcCurr)
 
          //
          if (computerScore === 21) {
+            startBtn = document.querySelector('#start')
+            startBtn.style.visibility = "visible"
+
             pcCurr = document.querySelector("#computerData")
-            pcCurr.innerText = "BLACKJACK!!!"
+            pcCurr.innerText = `Dealer score is ${computerScore}, BLACKJACK`
+            declare.innerText = "DEALER WINS!"
+
          }
          if (computerScore > 21) {
+            startBtn = document.querySelector('#start')
+            startBtn.style.visibility = "visible"
+
             pcCurr = document.querySelector("#computerData")
-            pcCurr.innerText = "BUSTED"
+            pcCurr.innerText = `Dealer score is ${computerScore}, Dealer BUSTED`
+            declare.innerText = "DEALER LOSE!"
          }
 
       } catch (err) {
          console.log(err)
       }
    }
+
+   const clearBoard = () => {
+      const board = document.querySelector("#board");
+      board.innerHTML = "";
+   }
+
+   const clearStats = () => {
+      currentScore = 0;
+      computerScore = 0;
+      const winnerOrLoser = document.querySelector("#winOrLoss")
+      winnerOrLoser.innerHTML = "";
+   }
+
    const declareWinner = () => {
-      declare = document.querySelector("#winOrLoss")
-      playerCurr = document.querySelector("#playerData")
-      pcCurr = document.querySelector("#computerData")
-      
+      if(currentScore > computerScore){
+         console.log(currentScore)
+         declare.innerText = "PLAYER WINS!"
+      } else if (currentScore < computerScore){
+         declare.innerText = "DEALER WINS"
+      } else {
+         "TIE, START A NEW GAME"
+      }
    }
    setupBtns()
-   declareWinner
 })
-
-/*
-5 parts
-
-1. fetch for a deck
-2. draw cards
-3. computer draws
-4. declare winner
-
-
-*/
